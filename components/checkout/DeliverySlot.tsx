@@ -31,7 +31,7 @@ export default function DeliverySlot({
   onSlotChange,
 }: DeliverySlotProps) {
   return (
-    <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
+    <div className="rounded-3xl border border-gray-100 bg-white p-4 sm:p-6 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="flex items-center gap-3 text-xl font-bold text-gray-900">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">

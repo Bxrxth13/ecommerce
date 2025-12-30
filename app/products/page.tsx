@@ -8,11 +8,12 @@ import { products } from "@/lib/data/products";
 import { categories } from "@/lib/data/categories";
 import ProductGrid from "@/components/product/ProductGrid";
 import Sidebar from "@/components/layout/Sidebar";
-import { Apple, Egg, Wheat, Fish, Package, Wine } from "lucide-react";
+import { Apple, Egg, Wheat, Fish, Package, Wine, Carrot } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const departments = [
-  { id: "fruits", name: "Fresh Produce", icon: Apple, categoryId: "fruits" },
+  { id: "fruits", name: "Fruits", icon: Apple, categoryId: "fruits" },
+  { id: "vegetables", name: "Vegetables", icon: Carrot, categoryId: "vegetables" },
   { id: "dairy", name: "Dairy & Eggs", icon: Egg, categoryId: "dairy-eggs" },
   { id: "bakery", name: "Bakery", icon: Wheat, categoryId: "bakery" },
   { id: "meat", name: "Meat & Seafood", icon: Fish, categoryId: "meat-fish" },
@@ -45,12 +46,17 @@ function ProductsPageContent() {
     const categoryParam = searchParams.get("category");
     const searchParam = searchParams.get("search");
 
-    if (categoryParam) {
-      setSelectedCategory(categoryParam);
-    }
-    if (searchParam) {
-      setSearchQuery(searchParam);
-    }
+    // Sync state with URL params - always update to ensure no stale state
+    setSelectedCategory(categoryParam || null);
+    setSearchQuery(searchParam || "");
+
+    const sortParam = searchParams.get("sort");
+    const onSaleParam = searchParams.get("onSale");
+    const organicParam = searchParams.get("organic");
+
+    setSortBy((sortParam as any) || "popularity");
+    setFilter("onSale", onSaleParam === "true");
+    setFilter("organic", organicParam === "true");
   }, [searchParams, setProducts, setCategories, setSelectedCategory, setSearchQuery]);
 
   const filteredProducts = getFilteredProducts();

@@ -22,7 +22,7 @@ export default function DeliveryAddress({
   onSaveAddressChange,
 }: DeliveryAddressProps) {
   return (
-    <div className="rounded-lg border bg-white p-6">
+    <div className="rounded-lg border bg-white p-4 sm:p-6">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-white">

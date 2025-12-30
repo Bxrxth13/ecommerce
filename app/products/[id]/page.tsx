@@ -196,7 +196,7 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Quantity & Total */}
-          <div className="mt-auto rounded-3xl border border-gray-100 bg-gray-50 p-6">
+          <div className="mt-auto hidden rounded-3xl border border-gray-100 bg-gray-50 p-6 lg:block">
             <div className="mb-6 flex items-end justify-between">
               <div>
                 <label className="mb-2 block text-sm font-bold text-gray-900">

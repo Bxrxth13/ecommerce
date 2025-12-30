@@ -26,7 +26,7 @@ export default function CheckoutPage() {
   const [selectedDate, setSelectedDate] = useState("2024-10-24");
   const [selectedSlot, setSelectedSlot] = useState("10:00-12:00");
   const [paymentMethod, setPaymentMethod] = useState("upi");
-
+                                            
   if (items.length === 0) {
     return (
       <div className="container mx-auto px-4 py-12 text-center">
@@ -87,12 +87,12 @@ export default function CheckoutPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
-      <div className="mb-8 flex items-end justify-between">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="mb-2 text-4xl font-extrabold text-gray-900 tracking-tight">Checkout</h1>
           <p className="font-medium text-gray-500">Complete your order in 3 simple steps</p>
         </div>
-        <div className="flex items-center gap-2 rounded-full bg-green-50 px-4 py-2 border border-green-100">
+        <div className="flex w-fit items-center gap-2 rounded-full bg-green-50 px-4 py-2 border border-green-100">
           <Lock className="h-4 w-4 text-green-600" />
           <span className="text-xs font-bold uppercase tracking-wide text-green-700">Secure Checkout</span>
         </div>

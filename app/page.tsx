@@ -19,7 +19,7 @@ const popularItems = [
 ];
 
 const quickEssentials = products.filter((p) =>
-  ["fresh-milk-gallon", "sliced-bread", "organic-eggs", "organic-bananas"].includes(p.id)
+  ["whole-milk", "sliced-bread", "organic-eggs", "organic-bananas"].includes(p.id)
 );
 
 export default function HomePage() {
@@ -57,7 +57,7 @@ export default function HomePage() {
           <Search className="absolute left-[24px] top-1/2 h-6 w-6 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search for milk, vegetables, chips..."
+            placeholder="Search for milk, vegetable,chips..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="h-[64px] w-full rounded-full border-none bg-white pl-[56px] pr-[128px] text-[18px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#13EC49]"

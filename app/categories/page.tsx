@@ -7,6 +7,9 @@ import { categories } from "@/lib/data/categories";
 import { products } from "@/lib/data/products";
 import CategoryCard from "@/components/category/CategoryCard";
 import { TrendingUp, Percent, Leaf, Snowflake, Grid } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+// ... existing imports
 import { cn } from "@/lib/utils";
 
 const filterOptions = [
@@ -18,13 +21,35 @@ const filterOptions = [
 ];
 
 export default function CategoriesPage() {
-  const { setCategories, setProducts, selectedCategory, setSelectedCategory } = useProductStore();
-  const [activeFilter, setActiveFilter] = useState("all");
+  const router = useRouter();
+  const { setCategories, setProducts } = useProductStore();
 
   useEffect(() => {
     setCategories(categories);
     setProducts(products);
   }, [setCategories, setProducts]);
+
+  const handleFilterClick = (filterId: string) => {
+    switch (filterId) {
+      case "all":
+        router.push("/products");
+        break;
+      case "popular":
+        router.push("/products?sort=popularity");
+        break;
+      case "deals":
+        router.push("/products?onSale=true");
+        break;
+      case "organic":
+        router.push("/products?organic=true");
+        break;
+      case "frozen":
+        router.push("/products?search=frozen");
+        break;
+      default:
+        router.push("/products");
+    }
+  };
 
   const filteredCategories = categories;
 
@@ -51,17 +76,11 @@ export default function CategoriesPage() {
       <div className="mb-8 flex flex-wrap gap-3">
         {filterOptions.map((filter) => {
           const Icon = filter.icon;
-          const isActive = activeFilter === filter.id;
           return (
             <button
               key={filter.id}
-              onClick={() => setActiveFilter(filter.id)}
-              className={cn(
-                "flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-bold transition-all hover:scale-105 active:scale-95",
-                isActive
-                  ? "border-green-600 bg-green-600 text-white shadow-md"
-                  : "border-gray-200 bg-white text-gray-600 hover:border-green-500 hover:text-green-600 hover:shadow-sm"
-              )}
+              onClick={() => handleFilterClick(filter.id)}
+              className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-gray-600 transition-all hover:border-green-500 hover:text-green-600 hover:scale-105 active:scale-95 shadow-sm"
             >
               <Icon className="h-4 w-4" />
               {filter.label}
