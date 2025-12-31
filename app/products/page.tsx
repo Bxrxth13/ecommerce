@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useProductStore } from "@/store/productStore";
 import { products } from "@/lib/data/products";
 import { categories } from "@/lib/data/categories";
 import ProductGrid from "@/components/product/ProductGrid";
-import Sidebar from "@/components/layout/Sidebar";
 import { Apple, Egg, Wheat, Fish, Package, Wine, Carrot } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +21,7 @@ const departments = [
 ];
 
 function ProductsPageContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const {
     setProducts,
@@ -33,6 +33,7 @@ function ProductsPageContent() {
     sortBy,
     setSortBy,
     setSearchQuery,
+    searchQuery,
     getFilteredProducts,
   } = useProductStore();
 
@@ -40,13 +41,18 @@ function ProductsPageContent() {
   const itemsPerPage = 20;
 
   useEffect(() => {
+    // Initialize data
     setProducts(products);
     setCategories(categories);
 
+    // Read params
     const categoryParam = searchParams.get("category");
     const searchParam = searchParams.get("search");
 
-    // Sync state with URL params - always update to ensure no stale state
+    console.log("DEBUG: Params Update", { category: categoryParam, search: searchParam });
+
+    // CRITICAL: Always sync state. If param is missing, RESET the state to null/empty.
+    // This ensures that switching from Search -> Category clears the search query, and vice versa.
     setSelectedCategory(categoryParam || null);
     setSearchQuery(searchParam || "");
 
@@ -57,7 +63,7 @@ function ProductsPageContent() {
     setSortBy((sortParam as any) || "popularity");
     setFilter("onSale", onSaleParam === "true");
     setFilter("organic", organicParam === "true");
-  }, [searchParams, setProducts, setCategories, setSelectedCategory, setSearchQuery]);
+  }, [searchParams, setProducts, setCategories, setSelectedCategory, setSearchQuery, setSortBy, setFilter]);
 
   const filteredProducts = getFilteredProducts();
   const paginatedProducts = filteredProducts.slice(
@@ -65,6 +71,18 @@ function ProductsPageContent() {
     currentPage * itemsPerPage
   );
   const hasMore = paginatedProducts.length < filteredProducts.length;
+
+  // Helper to determine Page Title
+  const getPageTitle = () => {
+    if (selectedCategory) {
+      const category = categories.find((c) => c.id === selectedCategory);
+      return category ? category.name : "Category";
+    }
+    if (searchQuery) {
+      return `Results for "${searchQuery}"`;
+    }
+    return "All Products";
+  };
 
   return (
     <div className="flex min-h-screen">
@@ -83,9 +101,14 @@ function ProductsPageContent() {
                 return (
                   <button
                     key={dept.id}
-                    onClick={() =>
-                      setSelectedCategory(isActive ? null : dept.categoryId)
-                    }
+                    onClick={() => {
+                      if (isActive) {
+                        router.push("/products");
+                      } else {
+                        // Clear search is implied by new URL lacking 'search' param, which useEffect handles
+                        router.push(`/products?category=${dept.categoryId}`);
+                      }
+                    }}
                     className={cn(
                       "flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-[15px] font-[500] transition-all duration-200",
                       isActive
@@ -199,13 +222,17 @@ function ProductsPageContent() {
             Groceries
           </Link>
           <span className="mx-2 text-gray-300">›</span>
-          <span className="text-[#0D1B11] font-[600]">Fresh Produce</span>
+          <span className="text-[#0D1B11] font-[600]">
+            {getPageTitle()}
+          </span>
         </nav>
 
         {/* Header */}
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="text-[32px] font-[800] tracking-tight text-[#0D1B11] sm:text-[40px] leading-tight">Fresh Produce</h1>
+            <h1 className="text-[32px] font-[800] tracking-tight text-[#0D1B11] sm:text-[40px] leading-tight">
+              {getPageTitle()}
+            </h1>
             <p className="mt-2 text-[16px] font-[400] text-[#6B7280]">
               {filteredProducts.length} items hand-picked for freshness
             </p>
@@ -258,4 +285,3 @@ export default function ProductsPage() {
     </Suspense>
   );
 }
-

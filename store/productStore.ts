@@ -64,11 +64,14 @@ export const useProductStore = create<ProductStore>((set, get) => ({
     const { products, searchQuery, filters, sortBy, selectedCategory } = get();
     let filtered = [...products];
 
+    console.log("Store DEBUG:", { selectedCategory, searchQuery, totalProducts: products.length });
+
     // Filter by category
     if (selectedCategory) {
       filtered = filtered.filter(
         (p) => p.categoryId === selectedCategory
       );
+      console.log("Store DEBUG: After Category Filter", { count: filtered.length, category: selectedCategory });
     }
 
     // Filter by search query
@@ -80,6 +83,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
           p.description.toLowerCase().includes(query) ||
           p.category.toLowerCase().includes(query)
       );
+      console.log("Store DEBUG: After Search Filter", { count: filtered.length, query });
     }
 
     // Apply filters
