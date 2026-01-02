@@ -13,6 +13,7 @@ import { formatPrice, cn } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import QuantitySelector from "@/components/ui/QuantitySelector";
+import ProductCard from "@/components/product/ProductCard";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -72,6 +73,10 @@ export default function ProductDetailPage() {
       addItem(product, quantity);
     }
   };
+
+  const relatedProducts = products
+    .filter((p) => p.categoryId === product.categoryId && p.id !== product.id)
+    .slice(0, 4);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -224,6 +229,18 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Related Products */}
+      {relatedProducts.length > 0 && (
+        <section className="mt-16 border-t border-gray-100 pt-16 mb-20">
+          <h2 className="mb-8 text-2xl font-[800] text-[#0D1B11]">You May Also Like</h2>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {relatedProducts.map((p) => (
+              <ProductCard key={p.id} product={p} showQuantity={true} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Sticky Bottom Bar - Mobile */}
       <div className="fixed bottom-20 left-0 right-0 z-20 border-t bg-white p-4 shadow-lg lg:hidden">

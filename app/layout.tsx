@@ -26,7 +26,7 @@ export default function RootLayout({
         className={`${jakarta.variable} font-sans antialiased text-[#0D1B11] bg-[#F6F8F6]`}
       >
         <Header />
-        <main className="min-h-screen pb-20 lg:pb-0">{children}</main>
+        <main className="min-h-screen pb-20 lg:pb-0 pt-[100px]">{children}</main>
         <MobileNav />
       </body>
     </html>

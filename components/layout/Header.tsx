@@ -3,17 +3,12 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { Search, ShoppingCart, User, MapPin, Zap, ChevronDown } from "lucide-react";
+import { ShoppingCart, User } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import CartDrawer from "@/components/cart/CartDrawer";
-import { formatPrice } from "@/lib/utils";
 
 export default function Header() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const { openCart, getItemCount, getTotal } = useCartStore();
-  const [searchQuery, setSearchQuery] = useState("");
+  const { openCart, getItemCount } = useCartStore();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -21,70 +16,50 @@ export default function Header() {
   }, []);
 
   const cartItemCount = getItemCount();
-  const cartTotal = getTotal();
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
-
-  const isHomePage = pathname === "/";
 
   return (
     <>
-      <header className="sticky top-0 z-30 border-b border-[#E5E7EB] bg-[#102215]">
+      <header className="fixed top-0 w-full z-50 border-b border-[#E5E7EB] bg-[#102215] shadow-sm transition-all duration-300">
         <div className="container mx-auto px-4">
-          <div className="flex items-center gap-6 py-3">
+          <div className="flex items-center justify-between py-5">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 flex-shrink-0">
-              <div className="relative h-10 w-10 overflow-hidden rounded-full border border-white/20 bg-white">
+            <Link href="/" className="flex items-center gap-3 flex-shrink-0 group">
+              <div className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-white/20 bg-white transition-transform group-hover:scale-105">
                 <Image src="/logo.jpg" alt="FreshMarket" fill className="object-cover" />
               </div>
-              <span className="text-xl font-[700] text-white">FreshMarket</span>
+              <span className="text-2xl font-[800] text-white tracking-tight">FreshMarket</span>
             </Link>
 
-            {/* Search Bar - Desktop */}
-            <form onSubmit={handleSearch} className="hidden lg:flex flex-1 max-w-lg">
-              <div className="relative w-full">
-                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="search"
-                  placeholder="Search for fruits, vegetables, groceries..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-11 w-full rounded-full bg-[#1a3a24] border border-[#2a4a34] pl-12 pr-4 text-[15px] text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#13EC49]/50"
-                />
-              </div>
-            </form>
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+              {[
+                { label: "Home", href: "/" },
+                { label: "Groceries", href: "/categories" },
+                { label: "Products", href: "/products" },
+                { label: "About", href: "/about" },
+              ].map((link) => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className="text-[15px] font-[600] text-gray-300 hover:text-[#13EC49] transition-colors tracking-wide"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
 
             {/* Right Side Actions */}
-            <div className="flex items-center gap-4 ml-auto">
-              {/* Delivery Info Pills (Desktop) */}
-              <div className="hidden xl:flex items-center gap-3">
-                <button className="flex items-center gap-2 rounded-full border border-[#2a4a34] bg-[#1a3a24] px-4 py-2 text-sm font-medium text-white hover:border-[#13EC49]/50 transition-colors">
-                  <MapPin className="h-4 w-4 text-[#13EC49]" />
-                  <span className="text-gray-300">Delivering to</span>
-                  <span className="font-[600] text-white">Home - 123 Mai...</span>
-                  <ChevronDown className="h-4 w-4 text-gray-400" />
-                </button>
-
-                <div className="flex items-center gap-2 rounded-full border border-[#2a4a34] bg-[#1a3a24] px-4 py-2 text-sm font-[600] text-white">
-                  <Zap className="h-4 w-4 fill-[#13EC49] text-[#13EC49]" />
-                  <span>12 mins</span>
-                </div>
-              </div>
-
+            <div className="flex items-center gap-4">
+              {/* Cart Button */}
               {/* Cart Button */}
               <button
                 onClick={openCart}
-                className="group flex items-center gap-2 rounded-full bg-[#13EC49] px-5 py-2.5 text-[#102215] transition-all hover:bg-[#0EA835] active:scale-95"
+                className="group flex items-center gap-2 rounded-full bg-[#13EC49] p-3 lg:px-6 lg:py-3 text-[#102215] transition-all hover:bg-[#0EA835] active:scale-95 shadow-lg shadow-green-900/20"
               >
                 <ShoppingCart className="h-5 w-5" />
-                <span className="font-[700]">Cart</span>
+                <span className="hidden lg:inline font-[700] text-[15px]">Cart</span>
                 {mounted && cartItemCount > 0 && (
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#102215] text-xs font-bold text-white">
+                  <span className="flex h-5 w-5 lg:h-6 lg:w-6 items-center justify-center rounded-full bg-[#102215] text-[10px] lg:text-xs font-bold text-white">
                     {cartItemCount}
                   </span>
                 )}
@@ -93,28 +68,13 @@ export default function Header() {
               {/* Account Button (Desktop) */}
               <Link
                 href="/profile"
-                className="hidden lg:flex items-center gap-2 text-sm font-[500] text-white hover:text-[#13EC49] transition-colors"
+                className="hidden lg:flex items-center gap-2 text-sm font-[600] text-white hover:text-[#13EC49] transition-colors"
               >
-                <User className="h-5 w-5" />
-                <span>Account</span>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1a3a24] hover:bg-[#2a4a34] transition-colors">
+                  <User className="h-5 w-5" />
+                </div>
               </Link>
             </div>
-          </div>
-
-          {/* Mobile Search Bar */}
-          <div className="pb-3 lg:hidden">
-            <form onSubmit={handleSearch}>
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="search"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-11 w-full rounded-full bg-[#1a3a24] border border-[#2a4a34] pl-12 pr-4 text-[15px] text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#13EC49]/50"
-                />
-              </div>
-            </form>
           </div>
         </div>
       </header>

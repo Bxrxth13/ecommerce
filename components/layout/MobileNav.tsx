@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { label: "Home", href: "/", icon: Home },
   { label: "Categories", href: "/categories", icon: Grid },
-  { label: "Search", href: "/search", icon: Search },
-  { label: "Cart", href: "/cart", icon: ShoppingCart },
+  { label: "Search", href: "/products", icon: Search },
+  { label: "cart", href: "/cart", icon: ShoppingCart },
   { label: "Profile", href: "/profile", icon: User },
 ];
 
@@ -25,7 +25,7 @@ export default function MobileNav() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-30 border-t bg-white shadow-lg lg:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-white shadow-lg lg:hidden pb-[env(safe-area-inset-bottom)]">
       <div className="flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -47,7 +47,7 @@ export default function MobileNav() {
                   {cartItemCount}
                 </span>
               )}
-              {item.href === "/search" ? (
+              {item.label === "Search" ? (
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-600 text-white">
                   <Icon className="h-6 w-6" />
                 </div>
